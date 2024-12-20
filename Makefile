@@ -54,8 +54,8 @@ $(PDK_ROOT)/skywater-pdk:
 .PHONY: skywater-pdk
 skywater-pdk: $(PDK_ROOT)/skywater-pdk
 	cd $(PDK_ROOT)/skywater-pdk && \
-		git checkout master && git pull && \
-		git checkout -qf $(SKYWATER_COMMIT)
+		git checkout main && git pull && \
+		git checkout -qf $(SKYWATER_COMMIT) && cp ../OpenLane_old/environment.yml .
 
 .PHONY: skywater-library
 skywater-library: $(PDK_ROOT)/skywater-pdk
@@ -138,6 +138,11 @@ test:
 	@[ -f $(OPENLANE_DIR)/designs/$(TEST_DESIGN)/runs/openlane_test/results/magic/$(TEST_DESIGN).gds ] && \
 		echo "Basic test passed" || \
 		echo "Basic test failed"
+
+.PHONY: test2
+test2:
+	cd $(OPENLANE_DIR) && \
+		docker run -it -v $(OPENLANE_DIR):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) -u $(shell id -u $(USER)):$(shell id -g $(USER)) $(IMAGE_NAME) sh -c "./flow.tcl -design 151 aes192 aes_core BM64 des genericfir ldpc_decoder_802_3an md5 point_add sha3 spm usb_cdc_core  xtea    zipdiv aes     aes256      APU       chacha         des3                         inverter      ldpcenc                      ocs_blitter  point_scalar_mult  s44        sha512  synth_ram  usbf_device   y_dct aes128  aes_cipher  blabla    cic_decimator  digital_pll_sky130_fd_sc_hd  jpeg_encoder  manual_macro_placement_test  picorv32a    PPU                salsa20    sound   usb        wbqspiflash   y_huff -tag test2 -disable_output -overwrite"
 
 .PHONY: clean_runs
 clean_runs:

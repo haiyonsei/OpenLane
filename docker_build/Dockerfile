@@ -21,6 +21,15 @@ FROM centos:centos7 as build
 
 # install base dependencies
 # including python 3.6
+
+RUN sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
+RUN sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
+RUN sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
+
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+
 RUN yum install -y https://repo.ius.io/ius-release-el$(rpm -E '%{rhel}').rpm && \
 	yum install -y \
 		make \
@@ -53,7 +62,7 @@ RUN pip install --no-cache-dir \
 		matplotlib \
 		jinja2 \
 		pandas \
-		install \
+		#install \
 		XlsxWriter
 
 # for magic
